@@ -3,7 +3,7 @@ if ENV['RACK_ENV'] != 'production'
   Dotenv.load
 end
 
-require 'sequel'
+# require 'sequel'
 DB = Sequel.connect(ENV['DATABASE_URL'])
 
 require './lib/transformative/models/site'
