@@ -119,23 +119,11 @@ module Transformative
       if params[:domain]
         @site = Site.first(domain: params[:domain].to_s)
         if @site.nil?
-          raise TransformativeError.new("No site found for '#{params[:domain].to_s}'")
+          raise StandardError.new("No site found for '#{params[:domain].to_s}'")
         end
       else
         not_found
       end
-    end
-
-    def index_page
-      not_found if @posts_rows.nil? || @posts_rows.empty?
-      cache_control :s_maxage => 300, :max_age => 600
-      @posts = @posts_rows.map { |row| Cache.row_to_post(row) }
-      @contexts = Cache.contexts(@posts)
-      @authors = Cache.authors_from_cites(@contexts)
-      @authors.merge!(Cache.authors_from_categories(@posts))
-      @webmention_counts = Cache.webmention_counts(@posts)
-      @footer = true
-      erb :index
     end
 
     def require_auth
