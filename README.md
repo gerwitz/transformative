@@ -1,18 +1,3 @@
-Fork plan:
-
-- configure for hans.gerwitz.com
-- make media endpoint use git
-- remove site server
-- multi-host support
-
-- review and document entry types
-
-- webmention review for syndication
-
-- abstract destination formats
-- abstract destination venues
-
-
 # Transformative
 
 Transformative is a microblogging engine that powers my personal website [barryfrost.com][bf]. It's written in Ruby and supports several key [IndieWeb][] technologies as detailed below.
