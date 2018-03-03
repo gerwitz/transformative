@@ -1,5 +1,5 @@
 require 'dotenv'
-Dotenv.load
+Dotenv.load unless env == :production
 
 require 'sequel'
 

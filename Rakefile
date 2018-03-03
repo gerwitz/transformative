@@ -7,7 +7,7 @@ Bundler.require(:default, :development)
 # require 'time'
 
 require 'dotenv'
-Dotenv.load
+Dotenv.load unless env == :production
 
 # require_relative 'lib/transformative.rb'
 
