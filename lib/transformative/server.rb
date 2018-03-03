@@ -4,7 +4,7 @@ module Transformative
     helpers ViewHelper
 
     configure do
-      use Rack::SSL if settings.production?
+      # use Rack::SSL if settings.production?
 
       # this feels like an odd hack to avoid Sinatra's natural directory structure
       root_path = "#{File.dirname(__FILE__)}/../../"
