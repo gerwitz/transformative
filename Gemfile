@@ -1,9 +1,9 @@
 source 'https://rubygems.org'
 
-ruby '2.3.1'
+ruby '2.3.3'
 
-gem 'sinatra'
-gem 'sinatra-contrib'
+gem 'sinatra', require: 'sinatra/base'
+gem 'sinatra-contrib', require: 'sinatra/link_header'
 gem 'rack-contrib'
 gem 'rack-ssl'
 gem 'puma'

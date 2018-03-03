@@ -1,0 +1,13 @@
+<h1><%= @site.domain %></h1>
+<div>
+  <div>
+    Site URL: <a href="<%= @site.url %>"><%= @site.url %></a>
+  </div>
+  <ul>
+    <% @site.terminals.each do |terminal| %>
+    <li>
+      <strong><%= terminal.type_desc %></strong>: <%= terminal.location %>
+    </li>
+    <% end %>
+  </ul>
+</div>

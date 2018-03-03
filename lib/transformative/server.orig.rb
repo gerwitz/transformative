@@ -6,15 +6,12 @@ module Transformative
     configure do
       use Rack::SSL if settings.production?
 
-      # this feels like an odd hack to avoid Sinatra's natural directory structure
       root_path = "#{File.dirname(__FILE__)}/../../"
       set :config_path, "#{root_path}config/"
       set :syndication_targets,
         JSON.parse(File.read("#{settings.config_path}syndication_targets.json"))
       set :markdown, layout_engine: :erb
       set :server, :puma
-
-      set :views, "#{root_path}views/"
     end
 
     before do
@@ -24,16 +21,168 @@ module Transformative
     end
 
     get '/' do
-      @sites = Site.all
-      erb :index
+      @posts_rows = Cache.stream(%w( note article photo repost ),
+        params[:page] || 1)
+      index_page
     end
 
-    get '/:domain/info' do
-      find_site
-      erb :info
+    get '/all' do
+      @posts_rows = Cache.stream_all(params[:page] || 1)
+      @title = "All"
+      index_page
     end
 
-    post '/:domain/micropub' do
+    get %r{/tags?/([A-Za-z0-9\-\+]+)/?} do |tags|
+      tags.downcase!
+      @title = "Tagged  ##{tags.split('+').join(' #')}"
+      @page_title = @title
+      @posts_rows = Cache.stream_tagged(tags, params[:page] || 1)
+      index_page
+    end
+
+    get %r{/(note|article|bookmark|photo|checkin|repost|like|replie)s/?} do |type|
+      @title = "#{type}s".capitalize
+      type = 'reply' if type == 'replie'
+      @posts_rows = Cache.stream([type], params[:page] || 1)
+      index_page
+    end
+
+    get %r{/([0-9]{4})/([0-9]{2})/?} do |y, m|
+      @posts_rows = Cache.stream_all_by_month(y, m)
+      @title = "#{Date::MONTHNAMES[m.to_i]} #{y}"
+      @page_title = @title
+      index_page
+    end
+
+    get %r{/([0-9]{4})/([0-9]{2})/([a-z0-9-]+)/?} do |y, m, slug|
+      url = "/#{y}/#{m}/#{slug}"
+      @post = Cache.get(url)
+      return not_found if @post.nil?
+      return deleted if @post.is_deleted?
+      @title = page_title(@post)
+      @webmentions = Cache.webmentions(@post)
+      @contexts = Cache.contexts(@post)
+      @authors = Cache.authors_from_cites(@webmentions, @contexts)
+      @authors.merge!(Cache.authors_from_categories(@post))
+      @post_page = true
+      link "#{ENV['SITE_URL']}webmention", rel: 'webmention'
+      cache_unless_new
+      if @post.h_type == 'h-entry'
+        erb :entry
+      else
+        erb :event
+      end
+    end
+
+    get %r{/([0-9]{4})/([0-9]{2})/([a-z0-9-]+)\.json} do |y, m, slug|
+      url = "/#{y}/#{m}/#{slug}"
+      json = Cache.get_json(url)
+      etag Digest::SHA1.hexdigest(json)
+      cache_control :s_maxage => 300, :max_age => 600
+      content_type :json, charset: 'utf-8'
+      json
+    end
+
+    get %r{/(index|posts|rss|feed)(\.xml)?} do
+      posts_rows = Cache.stream(%w( note article photo ), 1)
+      @posts = posts_rows.map { |row| Cache.row_to_post(row) }
+      xml = builder :rss
+      etag Digest::SHA1.hexdigest(xml)
+      cache_control :s_maxage => 300, :max_age => 600
+      content_type :xml
+      xml
+    end
+
+    get '/feed.json' do
+      posts_rows = Cache.stream(%w( note article photo ), 1)
+      posts = posts_rows.map { |row| Cache.row_to_post(row) }
+      json = jsonfeed(posts)
+      etag Digest::SHA1.hexdigest(json)
+      cache_control :s_maxage => 300, :max_age => 600
+      content_type :json, charset: 'utf-8'
+      json
+    end
+
+    get '/archives/?' do
+      posts = Cache.stream_all(1, 99999).map { |row| Cache.row_to_post(row) }
+      year = 0
+      month = 0
+      months_content = ""
+      @content = "<dl id=\"archives\">"
+      posts.each do |post|
+        published = Time.parse(post.properties['published'][0])
+        if published.strftime('%Y') != year
+          year = published.strftime('%Y')
+          @content += "#{months_content}\n<dt>#{year}</dt>\n"
+          months_content = ""
+        end
+        if published.strftime('%m') != month
+          month = published.strftime('%m')
+          mon = Date::MONTHNAMES[month.to_i][0...3]
+          months_content = "<dd><a href=\"/#{year}/#{month}\">#{mon}</a></dd>\n" +
+            months_content
+        end
+      end
+      @content += "#{months_content}\n</dl>"
+      @title = "Archives"
+      erb :static
+    end
+
+    # legacy redirects from old sites (baker)
+    get %r{/posts/([0-9]+)/?} do |baker_id|
+      post = Cache.get_first_by_slug("baker-#{baker_id}")
+      if post.nil?
+        not_found
+      else
+        redirect post.url, 301
+      end
+    end
+    get %r{/([0-9]{1,3})/?} do |baker_id|
+      post = Cache.get_first_by_slug("baker-#{baker_id}")
+      if post.nil?
+        not_found
+      else
+        redirect post.url, 301
+      end
+    end
+    get %r{/articles/([a-z0-9-]+)/?} do |slug|
+      post = Cache.get_first_by_slug(slug)
+      not_found if post.nil?
+      redirect post.url, 301
+    end
+    get '/feed' do
+      redirect '/rss', 302
+    end
+    get '/posts' do
+      redirect '/', 301
+    end
+    get '/about' do
+      redirect '/2015/01/about', 302
+    end
+    get '/colophon' do
+      redirect '/2016/11/colophon', 302
+    end
+    get '/2015/01/colophon' do
+      redirect '/2016/11/colophon', 302
+    end
+    get '/contact' do
+      redirect '/2015/01/contact', 302
+    end
+
+    post '/webhook' do
+      puts "Webhook params=#{params}"
+      return not_found unless params.key?('commits')
+      commits = params[:commits]
+
+      request.body.rewind
+      Auth.verify_github_signature(request.body.read,
+        request.env['HTTP_X_HUB_SIGNATURE'])
+
+      Store.webhook(commits)
+      status 204
+    end
+
+    post '/micropub' do
       puts "Micropub params=#{params}"
       # start by assuming this is a non-create action
       if params.key?('action')
@@ -58,7 +207,7 @@ module Transformative
       end
     end
 
-    get '/:domain/micropub' do
+    get '/micropub' do
       if params.key?('q')
         require_auth
         content_type :json
@@ -78,11 +227,11 @@ module Transformative
       end
     end
 
-    get '/:domain/webmention' do
+    get '/webmention' do
       "Webmention endpoint"
     end
 
-    post '/:domain/webmention' do
+    post '/webmention' do
       puts "Webmention params=#{params}"
       Webmention.receive(params[:source], params[:target])
       headers 'Location' => params[:target]
@@ -112,19 +261,7 @@ module Transformative
       erb :'410'
     end
 
-  private
-
-    # Look for a :domain param and set @site appropriately
-    def find_site
-      if params[:domain]
-        @site = Site.first(domain: params[:domain].to_s)
-        if @site.nil?
-          raise TransformativeError.new("No site found for '#{params[:domain].to_s}'")
-        end
-      else
-        not_found
-      end
-    end
+    private
 
     def index_page
       not_found if @posts_rows.nil? || @posts_rows.empty?

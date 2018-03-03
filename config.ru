@@ -24,5 +24,7 @@ require 'will_paginate/sequel'
 Sequel::Database.extension(:pagination, :pg_json)
 Sequel.extension(:pg_array, :pg_json_ops)
 
+DB = Sequel.connect(ENV['DATABASE_URL'])
+
 require 'transformative'
 run Transformative::Server

@@ -1,80 +1,17 @@
 <!DOCTYPE html>
-<html lang="en-GB">
+<html>
   <head>
     <meta charset="utf-8">
-    <title><% if @title %><%= @title %> &middot; <% end %>Barry Frost</title>
-    <% if @post_page %>
-      <link rel="canonical" href="<%= @post.absolute_url %>">
-      <link rel="self" href="<%= @post.absolute_url %>">
-      <link rel="webmention" href="/webmention">
-    <% else %>
-      <link rel="self" href="/">
-    <% end %>
-    <link rel="micropub" href="/micropub">
-    <link rel="authorization_endpoint" href="<%= ENV['AUTHORIZATION_ENDPOINT'] %>">
-    <link rel="token_endpoint" href="<%= ENV['TOKEN_ENDPOINT'] %>">
-    <link rel="hub" href="<%= ENV['PUBSUBHUBBUB_HUB'] %>">
-    <link rel="feed" type="text/html" href="/all">
-    <link rel="feed alternate" type="application/rss+xml" href="/rss" title="RSS feed">
-    <link rel="feed alternate" type="application/json" href="/feed.json" title="JSON feed">
-    <link rel="stylesheet" href="/css/moof.css">
-    <link rel="stylesheet" href="/css/font-awesome.min.css">
-    <link rel="shortcut icon" href="/barryfrost-favicon.png">
-    <link href="https://micro.blog/barryf" rel="me">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="manifest" href="/manifest.json">
-    <meta name="theme-color" content="#f60">
+    <title>Less Than Transformative</title>
   </head>
   <body>
     <header>
       <div>
-        <a href="/"><img src="/barryfrost.jpg" alt="Barry Frost"></a>
-        <h1>This is <a href="/about">Barry Frost</a>’s personal website.</h1>
-        <nav>
-          <ul>
-            <%= nav('/', 'Stream') %>
-            <%= nav('/all', 'All') %>
-            <li>&middot;</li>
-            <%= nav('/notes', 'Notes') %>
-            <%= nav('/articles', 'Articles') %>
-            <%= nav('/bookmarks', 'Bookmarks') %>
-            <%= nav('/checkins', 'Check-ins') %>
-            <%= nav('/photos', 'Photos') %>
-            <li>&middot;</li>
-            <%= nav('/replies', 'Replies') %>
-            <%= nav('/reposts', 'Reposts') %>
-            <%= nav('/likes', 'Likes') %>
-          </ul>
-        </nav>
+        <h1>Transfomative-based endpoints</h1>
       </div>
     </header>
 
     <%= yield %>
 
-    <% if @footer %>
-      <footer>
-        <ul>
-          <li><a href="/about">About</a></li>
-          <li>&middot;</li>
-          <li><a href="/2016/11/colophon">Colophon</a></li>
-          <li>&middot;</li>
-          <li><a href="/archives">Archives</a></li>
-          <li>&middot;</li>
-          <li><a href="/contact">Contact</a></li>
-        </ul>
-        <ul>
-          <li>I&lsquo;m also on</li>
-          <li><a rel="me" href="https://twitter.com/barryf">Twitter</a></li>
-          <li><a rel="me" href="https://github.com/barryf">GitHub</a></li>
-          <li><a rel="me" href="http://www.linkedin.com/in/barryfrost">LinkedIn</a></li>
-          <li><a rel="me" href="https://pinboard.in/u:barryf">Pinboard</a></li>
-          <li><a rel="me" href="http://instagram.com/barryf">Instagram</a></li>
-          <li><a rel="me" href="http://www.last.fm/user/barryf">Last.fm</a></li>
-        </ul>
-        <%= erb :_search_form %>
-      </footer>
-    <% end %>
-
-    <script src="/main.js"></script>
   </body>
 </html>

@@ -12,7 +12,11 @@ module Transformative
 end
 
 %w( utils post card cite entry event auth context media micropub notification
-    syndication authorship notification webmention view_helper cache twitter
+    syndication authorship notification webmention view_helper
     file_system store server ).each do |file|
   require_relative "transformative/#{file}.rb"
+end
+
+%w( site terminal ).each do |file|
+  require_relative "transformative/models/#{file}.rb"
 end
