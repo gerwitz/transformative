@@ -1,15 +1,13 @@
-env = ENV['RACK_ENV'].to_sym
-
 require "bundler/setup"
 Bundler.require(:default, :development)
 
 # require 'json'
 # require 'time'
 
-require 'dotenv'
-Dotenv.load unless env == production
-
-# require_relative 'lib/transformative.rb'
+if ENV['RACK_ENV'] != 'production'
+  # require 'dotenv'
+  Dotenv.load
+end
 
 DB = Sequel.connect(ENV['DATABASE_URL'])
 # DB[:posts].truncate
