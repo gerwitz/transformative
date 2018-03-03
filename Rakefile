@@ -1,4 +1,4 @@
-# create table posts (url varchar(255) primary key, data jsonb);
+env = ENV['RACK_ENV'].to_sym
 
 require "bundler/setup"
 Bundler.require(:default, :development)
@@ -7,7 +7,7 @@ Bundler.require(:default, :development)
 # require 'time'
 
 require 'dotenv'
-Dotenv.load unless env == :production
+Dotenv.load unless env == production
 
 # require_relative 'lib/transformative.rb'
 

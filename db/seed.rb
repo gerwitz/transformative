@@ -1,3 +1,5 @@
+env = ENV['RACK_ENV'].to_sym
+
 require 'dotenv'
 Dotenv.load unless env == :production
 
