@@ -1,0 +1,22 @@
+<h1><%= @site.domain %></h1>
+<div>
+  <div>
+    Site URL: <a href="<%= @site.url %>"><%= @site.url %></a>
+  </div>
+  <ul>
+    <% @site.terminals.each do |terminal| %>
+    <li>
+      <strong><%= terminal.type_desc %></strong>: <%= terminal.location %>
+    </li>
+    <% end %>
+  </ul>
+</div>
+
+<div>
+  <form action="https://indieauth.com/auth" method="get">
+    <input type="hidden" name="me" value="<%= @site.domain %>">
+    <input type="hidden" name="client_id" value="https://pub.sitewriter.com/">
+    <input type="hidden" name="redirect_uri" value="https://pub.sitewriter.com/login">
+    <button type="submit">Sign In</button>
+  </form>
+</div>

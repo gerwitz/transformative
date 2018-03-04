@@ -2,6 +2,30 @@ module Transformative
   module Auth
     module_function
 
+    def domain_via_indieauth(code)
+      # TODO: use our own endpoint instead of IndieAuth.com
+      response = HTTParty.post('https://indieauth.com/auth', {
+        body: {
+          code: code,
+          client_id: 'https://pub.sitewriter.com/',
+          redirect_uri: 'https://pub.sitewriter.com/login'
+        }
+      })
+      unless response.code.to_i == 200
+        if result = JSON.parse(response.body)
+          raise TransformativeError.new(result.error, result.error_description, response.code.to_i)
+        else
+          raise TransformativeError.new("indieauth", "Unrecognized IndieAuth error", 500)
+        end
+      end
+      body = JSON.parse(response.body)
+      if url = URI.parse(body.me)
+        return url.host.downcase
+      else
+        raise TransformativeError.new("indieauth", "Invalid IndieAuth response", 500)
+      end
+    end
+
     def verify_token_and_scope(token, scope)
       response = get_token_response(token, ENV['TOKEN_ENDPOINT'])
       unless response.code.to_i == 200

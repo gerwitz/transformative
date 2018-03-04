@@ -3,6 +3,8 @@ module Transformative
     helpers Sinatra::LinkHeader
     helpers ViewHelper
 
+    enable :sessions
+
     configure do
       # use Rack::SSL if settings.production?
 
@@ -28,9 +30,22 @@ module Transformative
       erb :index
     end
 
-    get '/:domain/info' do
+    get '/:domain/status' do
       find_site
-      erb :info
+      erb :status
+    end
+
+    get '/login' do
+      if params.key?('code') # this is probably an indieauth callback
+        domain = Auth.domain_via_indieauth(params[]:code])
+        @site = Site.first(domain: domain)
+        if @site.nil?
+          # maybe we should just create one, eh?
+          raise StandardError.new("No site found for '#{domain}'")
+        end
+        # should we update the URL?
+      end
+      erb :status
     end
 
     post '/:domain/micropub' do
