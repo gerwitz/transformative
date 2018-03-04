@@ -12,11 +12,13 @@
   </ul>
 </div>
 
+<% if !session[:domain] %>
 <div>
   <form action="https://indieauth.com/auth" method="get">
     <input type="hidden" name="me" value="<%= @site.domain %>">
-    <input type="hidden" name="client_id" value="https://pub.sitewriter.com/">
-    <input type="hidden" name="redirect_uri" value="https://pub.sitewriter.com/login">
-    <button type="submit">Sign In</button>
+    <input type="hidden" name="client_id" value="<%= "#{(ENV['RACK_ENV'] == 'production') ? 'https' : 'http'}://#{ request.host_with_port }/" %>">
+    <input type="hidden" name="redirect_uri" value="<%= "#{(ENV['RACK_ENV'] == 'production') ? 'https' : 'http'}://#{ request.host_with_port }/login" %>">
+    <button type="submit">Authenticate</button>
   </form>
 </div>
+<% end %>

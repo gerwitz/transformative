@@ -2,14 +2,15 @@ module Transformative
   module Auth
     module_function
 
-    def domain_via_indieauth(code)
+    def url_via_indieauth(our_host, code)
       # TODO: use our own endpoint instead of IndieAuth.com
       response = HTTParty.post('https://indieauth.com/auth', {
         body: {
           code: code,
-          client_id: 'https://pub.sitewriter.com/',
-          redirect_uri: 'https://pub.sitewriter.com/login'
-        }
+          client_id: "#{ENV['RACK_ENV'] == 'production' ? 'https' : 'http'}://#{our_host}/",
+          redirect_uri: "#{ENV['RACK_ENV'] == 'production' ? 'https' : 'http'}://#{our_host}/login"
+        },
+        headers: { 'Accept' => 'application/json' }
       })
       unless response.code.to_i == 200
         if result = JSON.parse(response.body)
@@ -19,8 +20,8 @@ module Transformative
         end
       end
       body = JSON.parse(response.body)
-      if url = URI.parse(body.me)
-        return url.host.downcase
+      if body['me']
+        return body['me']
       else
         raise TransformativeError.new("indieauth", "Invalid IndieAuth response", 500)
       end

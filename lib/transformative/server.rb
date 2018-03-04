@@ -37,15 +37,19 @@ module Transformative
 
     get '/login' do
       if params.key?('code') # this is probably an indieauth callback
-        domain = Auth.domain_via_indieauth(params[]:code])
-        @site = Site.first(domain: domain)
-        if @site.nil?
-          # maybe we should just create one, eh?
-          raise StandardError.new("No site found for '#{domain}'")
-        end
-        # should we update the URL?
+        url = Auth.url_via_indieauth(request.host_with_port, params[:code])
+        login_url(url)
       end
-      erb :status
+      if session[:domain]
+        redirect "/#{session[:domain]}/status"
+      else
+        redirect '/'
+      end
+    end
+
+    get '/logout' do
+      session.clear
+      redirect '/'
     end
 
     post '/:domain/micropub' do
@@ -128,6 +132,14 @@ module Transformative
     end
 
   private
+
+    def login_url(url)
+      domain = URI.parse(url).host.downcase
+      @site = Site.find_or_create(domain: domain)
+      @site.url = url
+      @site.save
+      session[:domain] = domain
+    end
 
     # Look for a :domain param and set @site appropriately
     def find_site
