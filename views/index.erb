@@ -1,6 +1,6 @@
 <div>
   <% if session[:domain] %>
-  Authenticated as <a href="/<%= session[:domain] %>/status"><%= session[:domain] %></a>
+  Authenticated as <a href="/<%= session[:domain] %>"><%= session[:domain] %></a>
   <form action="/logout" method="get">
     <button type="submit">Log out</button>
   </form>
@@ -23,7 +23,7 @@
   <ul>
     <% @sites.each do |site| %>
     <li>
-      <a href="/<%= site.domain %>/status"><%= site.domain %></a>
+      <a href="/<%= site.domain %>"><%= site.domain %></a>
     </li>
     <% end %>
   </ul>

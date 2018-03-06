@@ -30,18 +30,13 @@ module Transformative
       erb :index
     end
 
-    get '/:domain/status' do
-      find_site
-      erb :status
-    end
-
     get '/login' do
       if params.key?('code') # this is probably an indieauth callback
         url = Auth.url_via_indieauth(request.host_with_port, params[:code])
         login_url(url)
       end
       if session[:domain]
-        redirect "/#{session[:domain]}/status"
+        redirect "/#{session[:domain]}"
       else
         redirect '/'
       end
@@ -50,6 +45,11 @@ module Transformative
     get '/logout' do
       session.clear
       redirect '/'
+    end
+
+    get '/:domain' do
+      find_site
+      erb :domain
     end
 
     post '/:domain/micropub' do
