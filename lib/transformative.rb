@@ -17,6 +17,6 @@ end
   require_relative "transformative/#{file}.rb"
 end
 
-%w( site terminal ).each do |file|
+%w( site store github ).each do |file|
   require_relative "transformative/models/#{file}.rb"
 end

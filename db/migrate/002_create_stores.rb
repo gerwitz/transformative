@@ -1,9 +1,9 @@
 Sequel.migration do
   change do
-    create_table(:terminals) do
+    create_table(:stores) do
       primary_key :id
       foreign_key :site_id, :sites
-      String :type_id, null: false
+      Int :type_id, null: false
       String :location
       String :user
       String :key

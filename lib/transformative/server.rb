@@ -36,7 +36,7 @@ module Transformative
         login_url(url)
       end
       if session[:domain]
-        redirect "/#{session[:domain]}"
+        redirect "/#{session[:domain]}/"
       else
         redirect '/'
       end
@@ -48,8 +48,33 @@ module Transformative
     end
 
     get '/:domain' do
+      redirect "/#{params[:domain]}/"
+    end
+
+    get '/:domain/' do
       find_site
-      erb :domain
+      erb :site
+    end
+
+    post '/:domain/stores' do
+      find_site
+      if params.key?('type_id')
+        type_id = params['type_id'].to_i
+        store_class = Store.sti_class_from_sti_key(type_id)
+        puts "type: #{type_id}, class: #{store_class}"
+        store = store_class.create(
+          site_id: @site.id,
+        # )
+        # store.set(
+          location: params[:location],
+          user: params[:user],
+          key: params[:key]
+        )
+        store.save
+      else
+        raise TransformativeError.new("bad_request", "Can't POST a store without a type")
+      end
+      redirect "/#{@site.domain}/"
     end
 
     post '/:domain/micropub' do

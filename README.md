@@ -22,6 +22,8 @@ GitHub store for binaries
 
 Flow configuration: (type + origin + ?) -> entry store + params + template, binary store + params
 
+Logging
+
 *Deploy!*
 
 Parse `syndication` for origin domain

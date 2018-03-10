@@ -1,8 +1,13 @@
-module Transformative
-  module Store_
-    module_function
+# module Transformative
+  class Github < Store
 
-    def save(post)
+    def type_desc
+      return "GitHub"
+    end
+
+# below from Transformative
+
+    def store(post)
       # ensure entry posts always have an entry-type
       if post.h_type == 'h-entry'
         post.properties['entry-type'] ||= [post.entry_type]
@@ -135,11 +140,4 @@ module Transformative
     end
 
   end
-
-  class StoreError < TransformativeError
-    def initialize(message)
-      super("store", message)
-    end
-  end
-
-end
+# end
