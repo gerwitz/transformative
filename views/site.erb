@@ -46,16 +46,18 @@
         <%= flow.name %>
       </td><td>
         handles type <%= flow.post_type %>
-        <% if flow.store %>
+        <% if flow.store_id %>
           to <%= flow.store.type_desc %>
         <% end %>
       </td><td>
         <%= flow.allow_media ? 'handles' : 'does not handle' %> media files
-        <% if flow.media_store %>
+        <% if flow.media_store_id %>
           to <%= flow.media_store.type_desc %>
         <% end %>
       </td><td>
         <%= flow.allow_meta ? 'handles' : 'does not handle' %> metadata pings
+      </td><td>
+        [<a href="flows/<%= flow.id %>">edit</a>]
       </td>
     </tr>
     <% end %>

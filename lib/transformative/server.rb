@@ -73,16 +73,25 @@ module Transformative
 
     post '/:domain/flows' do
       auth_for_domain
+      # auth_for_domain(params[:domain])
       @site = find_site
       if params.key?('flow_id')
         # editing
         flow = Flow.first(id: params[:flow_id].to_i)
-        flow.update_fields(params, [:post_type_id, :allow_media, :allow_meta])
+        flow.update_fields(params, [:post_type_id, :name, :allow_media, :allow_meta, :path_template, :url_template, :content_template])
       else
         # creating
         flow = Flow.find_or_create(site_id: @site.id)
-        flow.update_fields(params, [:post_type_id, :allow_media, :allow_meta, :name])
+        flow.update_fields(params, [:post_type_id])
       end
+      redirect "/#{@site.domain}/flows/#{flow.id}"
+    end
+
+    get '/:domain/flows/:id' do
+      auth_for_domain
+      @site = find_site
+      @flow = Flow.find(id: params[:id].to_i, site_id: @site.id)
+      erb :flow
     end
 
     post '/:domain/micropub' do
@@ -188,7 +197,7 @@ module Transformative
       end
     end
 
-    def auth_for_domain(domain = "")
+    def auth_for_domain(domain = nil)
       domain ||= params[:domain]
       if domain != session[:domain]
         raise StandardError.new("Can't authenticate for domain '#{domain}'")
