@@ -13,6 +13,8 @@
     </form>
   </div>
   <% end %>
+
+  <h2>Available Stores</h2>
   <ul>
     <% @site.stores.each do |store| %>
     <li>
@@ -21,9 +23,12 @@
     <% end %>
   </ul>
   <div>
+    New:
     <form action="/<%= @site.domain %>/stores" method="post">
       <select name="type_id">
-        <option value="1">"GitHub"</option>
+        <% Store::TYPES.each do |id, name| %>
+        <option value="<%= id %>"><%= name %></option>
+        <% end %>
       </select>
       <input type="text" name="user" placeholder="username">
       <input type="text" name="location" placeholder="repository">
@@ -31,4 +36,59 @@
       <button type="submit">Add Store</button>
     </form>
   </div>
+
+<% if @site.stores.count > 0 %>
+  <h2>Flows</h2>
+  <table>
+    <% @site.flows.each do |flow| %>
+    <tr>
+      <td>
+        <%= flow.name %>
+      </td><td>
+        handles type <%= flow.post_type %>
+        <% if flow.store %>
+          to <%= flow.store.type_desc %>
+        <% end %>
+      </td><td>
+        <%= flow.allow_media ? 'handles' : 'does not handle' %> media files
+        <% if flow.media_store %>
+          to <%= flow.media_store.type_desc %>
+        <% end %>
+      </td><td>
+        <%= flow.allow_meta ? 'handles' : 'does not handle' %> metadata pings
+      </td>
+    </tr>
+    <% end %>
+  </table>
+  <div>
+    New:
+    <form action="/<%= @site.domain %>/flows" method="post">
+      <select name="post_type_id">
+        <% Transformative::Post::TYPES.each do |id, name| %>
+        <option value="<%= id %>"><%= name %></option>
+        <% end %>
+      </select>
+      <label><input type="checkbox" name="allow_media" value="true">handle media?</label>
+      <label><input type="checkbox" name="allow_meta" value="true">handle metadata pings?</label>
+      <label>
+        post store:
+        <select name="store_id">
+          <% @site.stores.each do |store| %>
+          <option value="<%= store.id %>"><%= store.type_desc %>: <%= store.location %></option>
+          <% end %>
+        </select>
+      </label>
+      <label>
+        media store:
+        <select name="media_store_id">
+          <% @site.stores.each do |store| %>
+          <option value="<%= store.id %>"><%= store.type_desc %>: <%= store.location %></option>
+          <% end %>
+        </select>
+      </label>
+      <button type="submit">Add Flow</button>
+    </form>
+  </div>
+<% end %>
+
 </div>

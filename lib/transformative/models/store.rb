@@ -7,7 +7,7 @@
 
     plugin :single_table_inheritance, :type_id, model_map: TYPES
 
-    many_to_one :domain
+    many_to_one :site
 
     def type_desc
       return "Unknown"

@@ -52,29 +52,37 @@ module Transformative
     end
 
     get '/:domain/' do
-      find_site
+      @site = find_site
       erb :site
     end
 
     post '/:domain/stores' do
-      find_site
+      auth_for_domain
+      @site = find_site
       if params.key?('type_id')
         type_id = params['type_id'].to_i
         store_class = Store.sti_class_from_sti_key(type_id)
-        puts "type: #{type_id}, class: #{store_class}"
-        store = store_class.create(
-          site_id: @site.id,
-        # )
-        # store.set(
-          location: params[:location],
-          user: params[:user],
-          key: params[:key]
-        )
-        store.save
+        # puts "type: #{type_id}, class: #{store_class}"
+        store = store_class.create(site_id: @site.id)
+        store.update_fields(params, [:location, :user, :key])
       else
         raise TransformativeError.new("bad_request", "Can't POST a store without a type")
       end
       redirect "/#{@site.domain}/"
+    end
+
+    post '/:domain/flows' do
+      auth_for_domain
+      @site = find_site
+      if params.key?('flow_id')
+        # editing
+        flow = Flow.first(id: params[:flow_id].to_i)
+        flow.update_fields(params, [:post_type_id, :allow_media, :allow_meta])
+      else
+        # creating
+        flow = Flow.find_or_create(site_id: @site.id)
+        flow.update_fields(params, [:post_type_id, :allow_media, :allow_meta, :name])
+      end
     end
 
     post '/:domain/micropub' do
@@ -158,6 +166,7 @@ module Transformative
 
   private
 
+    # login with domain from url
     def login_url(url)
       domain = URI.parse(url).host.downcase
       @site = Site.find_or_create(domain: domain)
@@ -166,15 +175,23 @@ module Transformative
       session[:domain] = domain
     end
 
-    # Look for a :domain param and set @site appropriately
     def find_site
       if params[:domain]
-        @site = Site.first(domain: params[:domain].to_s)
-        if @site.nil?
+        site = Site.first(domain: params[:domain].to_s)
+        if site.nil?
           raise StandardError.new("No site found for '#{params[:domain].to_s}'")
+        else
+          return site
         end
       else
         not_found
+      end
+    end
+
+    def auth_for_domain(domain = "")
+      domain ||= params[:domain]
+      if domain != session[:domain]
+        raise StandardError.new("Can't authenticate for domain '#{domain}'")
       end
     end
 

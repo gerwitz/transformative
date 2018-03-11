@@ -22,7 +22,7 @@ use Rack::PostBodyContentTypeParser
 
 require 'will_paginate/sequel'
 Sequel::Database.extension(:pagination, :pg_json)
-Sequel.extension(:pg_array, :pg_json_ops)
+Sequel.extension(:pg_array, :pg_json, :pg_json_ops)
 
 DB = Sequel.connect(ENV['DATABASE_URL'])
 

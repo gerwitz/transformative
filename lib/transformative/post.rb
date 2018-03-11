@@ -1,6 +1,14 @@
 module Transformative
   class Post
 
+    TYPES = {
+      1 => :entry,
+      2 => :note,
+      3 => :cite,
+      4 => :card,
+      5 => :event
+    }
+
     attr_reader :properties, :url
 
     def initialize(properties, url=nil)
