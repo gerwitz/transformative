@@ -117,10 +117,11 @@ module Transformative
         require_auth
         verify_create
         post = Micropub.create(params)
-        flow = flows.first(post_type_id: post.type_id)
+        flow = flows.where(post_type_id: post.type_id).first
         # post.syndicate(services) if services.any?
         # Store.save(post)
-        flow.store.save(post)
+puts "💡 flow: #{flow.inspect}"
+        flow.store_post(post)
         headers 'Location' => post.absolute_url
         status 202
       end

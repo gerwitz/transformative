@@ -22,6 +22,7 @@ module Transformative
       post.set_slug(params)
       # post.syndicate(services) if services.any?
       # Store.save(post)
+      return post
     end
 
     def action(properties)

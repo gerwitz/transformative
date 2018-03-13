@@ -19,4 +19,9 @@ class Flow < Sequel::Model
     return post.properties.inspect
   end
 
+  def store_post(post)
+puts "💡 store: #{store.inspect}, post: #{post.inspect}"
+    store.save(post)
+  end
+
 end

@@ -6,7 +6,7 @@ module Transformative
     end
 
     def type_id
-      TYPES.key(:entry)
+      TYPES.key(:event)
     end
 
     def h_type
