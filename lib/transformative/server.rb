@@ -96,6 +96,8 @@ module Transformative
 
     post '/:domain/micropub' do
       puts "Micropub params=#{params}"
+      site = find_site
+      flows = site.flows_dataset
       # start by assuming this is a non-create action
       if params.key?('action')
         verify_action
@@ -105,6 +107,7 @@ module Transformative
         status 204
       elsif params.key?('file')
         # assume this a file (photo) upload
+        flow = flows.first(allow_media: true)
         require_auth
         url = Media.save(params[:file])
         headers 'Location' => url
@@ -114,6 +117,10 @@ module Transformative
         require_auth
         verify_create
         post = Micropub.create(params)
+        flow = flows.first(post_type_id: post.type_id)
+        # post.syndicate(services) if services.any?
+        # Store.save(post)
+        flow.store.save(post)
         headers 'Location' => post.absolute_url
         status 202
       end

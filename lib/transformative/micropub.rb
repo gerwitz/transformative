@@ -2,6 +2,7 @@ module Transformative
   module Micropub
     module_function
 
+    # IN PROGRESS
     def create(params)
       if params.key?('h')
         safe_properties = sanitise_properties(params)
@@ -19,8 +20,8 @@ module Transformative
       end
 
       post.set_slug(params)
-      post.syndicate(services) if services.any?
-      Store.save(post)
+      # post.syndicate(services) if services.any?
+      # Store.save(post)
     end
 
     def action(properties)

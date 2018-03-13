@@ -5,6 +5,10 @@ module Transformative
       super(properties, url)
     end
 
+    def type_id
+      TYPES.key(:card)
+    end
+
     def h_type
       'h-card'
     end

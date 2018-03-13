@@ -7,7 +7,7 @@
 
 # below from Transformative
 
-    def store(post)
+    def save(post)
       # ensure entry posts always have an entry-type
       if post.h_type == 'h-entry'
         post.properties['entry-type'] ||= [post.entry_type]
@@ -127,13 +127,13 @@
     end
 
     def github_full_repo
-      "#{ENV['GITHUB_USER']}/#{ENV['GITHUB_REPO']}"
+      "#{user}/#{location}"
     end
 
     def octokit
       @octokit ||= case (ENV['RACK_ENV'] || 'development').to_sym
         when :production
-          Octokit::Client.new(access_token: ENV['GITHUB_ACCESS_TOKEN'])
+          Octokit::Client.new(access_token: key)
         else
           FileSystem.new
         end
