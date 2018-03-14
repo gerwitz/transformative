@@ -75,16 +75,17 @@ module Transformative
       auth_for_domain
       # auth_for_domain(params[:domain])
       @site = find_site
-      if params.key?('flow_id')
+      if params.key?('id')
         # editing
-        flow = Flow.first(id: params[:flow_id].to_i)
-        flow.update_fields(params, [:post_type_id, :name, :allow_media, :allow_meta, :path_template, :url_template, :content_template])
+        flow = Flow.first(id: params[:id].to_i)
+        flow.update_fields(params, [:post_type_id, :store_id, :name, :allow_media, :allow_meta, :path_template, :url_template, :content_template])
+        redirect "/#{@site.domain}/"
       else
         # creating
         flow = Flow.find_or_create(site_id: @site.id)
         flow.update_fields(params, [:post_type_id])
+        redirect "/#{@site.domain}/flows/#{flow.id}"
       end
-      redirect "/#{@site.domain}/flows/#{flow.id}"
     end
 
     get '/:domain/flows/:id' do
@@ -118,9 +119,9 @@ module Transformative
         verify_create
         post = Micropub.create(params)
         flow = flows.where(post_type_id: post.type_id).first
+puts "💡 flow: #{flow.inspect}"
         # post.syndicate(services) if services.any?
         # Store.save(post)
-puts "💡 flow: #{flow.inspect}"
         flow.store_post(post)
         headers 'Location' => post.absolute_url
         status 202
@@ -206,6 +207,7 @@ puts "💡 flow: #{flow.inspect}"
     end
 
     def auth_for_domain(domain = nil)
+      return if ENV['RACK_ENV'].to_sym == :development
       domain ||= params[:domain]
       if domain != session[:domain]
         raise StandardError.new("Can't authenticate for domain '#{domain}'")
