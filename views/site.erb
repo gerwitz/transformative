@@ -18,7 +18,7 @@
   <ul>
     <% @site.stores.each do |store| %>
     <li>
-      <strong><%= store.type_desc %></strong>: <%= store.location %>
+      <%= store.location %> (<%= store.type_desc %>)
     </li>
     <% end %>
   </ul>
@@ -42,13 +42,14 @@
   <table>
     <% @site.flows.each do |flow| %>
     <tr>
-      <td>
+      <th>
         <%= flow.name %>
-      </td><td>
-        handles type <%= flow.post_type %>
+      </th><td>
+        sends <%= flow.post_type %>
         <% if flow.store_id %>
-          to <%= flow.store.type_desc %>
+          to <%= flow.store.location %> (<%= flow.store.type_desc %>)
         <% end %>
+<!--
       </td><td>
         <%= flow.allow_media ? 'handles' : 'does not handle' %> media files
         <% if flow.media_store_id %>
@@ -56,6 +57,7 @@
         <% end %>
       </td><td>
         <%= flow.allow_meta ? 'handles' : 'does not handle' %> metadata pings
+ -->
       </td><td>
         [<a href="flows/<%= flow.id %>">edit</a>]
       </td>
@@ -66,29 +68,19 @@
     New:
     <form action="/<%= @site.domain %>/flows" method="post">
       <select name="post_type_id">
-        <% Transformative::Post::TYPES.each do |id, name| %>
+        <% Post::TYPES.each do |id, name| %>
         <option value="<%= id %>"><%= name %></option>
         <% end %>
       </select>
-      <label><input type="checkbox" name="allow_media" value="true">handle media?</label>
-      <label><input type="checkbox" name="allow_meta" value="true">handle metadata pings?</label>
       <label>
         post store:
         <select name="store_id">
           <% @site.stores.each do |store| %>
-          <option value="<%= store.id %>"><%= store.type_desc %>: <%= store.location %></option>
+          <option value="<%= store.id %>"><%= store.location %> (<%= store.type_desc %>)</option>
           <% end %>
         </select>
       </label>
-      <label>
-        media store:
-        <select name="media_store_id">
-          <% @site.stores.each do |store| %>
-          <option value="<%= store.id %>"><%= store.type_desc %>: <%= store.location %></option>
-          <% end %>
-        </select>
-      </label>
-      <button type="submit">Add Flow</button>
+      <button type="submit">New Flow</button>
     </form>
   </div>
 <% end %>

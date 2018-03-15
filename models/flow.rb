@@ -8,7 +8,7 @@ class Flow < Sequel::Model
   many_to_one :media_store, class: :Store
 
   def post_type
-    return Transformative::Post::TYPES[post_type_id].to_s
+    return Post::TYPES[post_type_id].to_s
   end
 
   def url_for_post(post)
@@ -21,7 +21,7 @@ class Flow < Sequel::Model
 
   def store_post(post)
 puts "💡 store: #{store.inspect}, post: #{post.inspect}"
-    store.save(post)
+    store.put(post.filename, post.data)
   end
 
 end
