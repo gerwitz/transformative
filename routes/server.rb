@@ -24,12 +24,13 @@ class SiteWriter < Sinatra::Application
       require_auth
       verify_create
       post = Micropub.create(params)
+# puts "💡 flows: #{flows.inspect}"
       flow = flows.where(post_type_id: post.type_id).first
-puts "💡 flow: #{flow.inspect}"
+# puts "💡 flow: #{flow.inspect}"
       # post.syndicate(services) if services.any?
       # Store.save(post)
-      flow.store_post(post)
-      headers 'Location' => post.absolute_url
+      url = flow.store_post(post)
+      headers 'Location' => url
       status 202
     end
   end

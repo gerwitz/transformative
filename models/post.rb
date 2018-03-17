@@ -13,6 +13,39 @@ class Post
   def initialize(properties, url=nil)
     @properties = properties
     @url = url
+
+    unless @properties.key?('published')
+      @properties['published'] = [Time.now.utc.iso8601]
+    end
+  end
+
+  def datify
+    published = @properties['published'].first
+    return DateTime.iso8601(published).to_date
+  end
+
+  # memoize
+  def date
+    @date ||= datify
+  end
+
+  def date_time
+    date.rfc3339
+  end
+
+  def view_properties
+    # tag(s)
+    {
+      slug: slug,
+      date_time: date_time,
+      year: date.year,
+      month: date.month,
+      day: date.day,
+      content: content
+    }
+  end
+
+  def file_path
   end
 
   def data
@@ -53,10 +86,11 @@ class Post
     end
   end
 
+
   def generate_url_published
-    unless @properties.key?('published')
-      @properties['published'] = [Time.now.utc.iso8601]
-    end
+    # unless @properties.key?('published')
+    #   @properties['published'] = [Time.now.utc.iso8601]
+    # end
     "/#{Time.parse(@properties['published'][0]).strftime('%Y/%m')}/#{slug}"
   end
 

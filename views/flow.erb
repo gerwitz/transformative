@@ -5,7 +5,10 @@
   <form action="/<%= @site.domain %>/flows" method="post">
     <input type="hidden" name="id" value="<%= @flow.id %>">
     <div>
-      <input type="text" name="name" placeholder="name" value="<%= @flow.name %>">
+      <label>
+        Name
+        <input type="text" name="name" placeholder="name" value="<%= @flow.name %>">
+      </label>
     </div><div>
       <label><input type="checkbox" name="allow_media" value="true"<%= ' checked' if @flow.allow_media %>>Handle media?</label>
       <label><input type="checkbox" name="allow_meta" value="true"<%= ' checked' if @flow.allow_meta %>>Handle metadata pings?</label>
@@ -18,7 +21,7 @@
         <% end %>
       </select></label>
       <label>
-        Store media via: <select name="media_store_id">
+        Store media via <select name="media_store_id">
           <% @site.stores.each do |store| %>
           <option value="<%= store.id %>"<%= ' selected' if (store.id == @flow.media_store_id) %>>
             <%= store.location %> (<%= store.type_desc %>)
@@ -29,16 +32,19 @@
     </div><div>
       <label>
         Path template
-        <textarea name="path_template" cols="80" rows="1"><%= @flow.path_template %></textarea>
+        <br>
+        <input type="text" size="80" name="path_template" value="<%= @flow.path_template %>">
       </label>
     </div><div>
       <label>
         URL template
-        <textarea name="path_template" cols="80" rows="1"><%= @flow.url_template %></textarea>
+        <br>
+        <input type="text" size="80" name="url_template" value="<%= @flow.url_template %>">
       </label>
     </div><div>
       <label>
         Content template
+        <br>
         <textarea name="content_template" cols="80" rows="25"><%= @flow.content_template %></textarea>
       </label>
     </div><div>

@@ -16,9 +16,9 @@ class Github < Store
   #   post
   # end
 
-  def put(filename, data)
+  def put(filename, content)
     puts "put: filename=#{filename}"
-    content = JSON.pretty_generate(data)
+    # content = JSON.pretty_generate(data)
     if existing = get_file(filename)
       unless Base64.decode64(existing['content']) == content
         update(existing['sha'], filename, content)
@@ -131,12 +131,13 @@ class Github < Store
   end
 
   def octokit
-    @octokit ||= case (ENV['RACK_ENV'] || 'development').to_sym
-      when :production
-        Octokit::Client.new(access_token: key)
-      else
-        FileSystem.new
-      end
+    @octokit ||= Octokit::Client.new(access_token: key)
+    # @octokit ||= case (ENV['RACK_ENV'] || 'development').to_sym
+    #   when :production
+    #     Octokit::Client.new(access_token: key)
+    #   else
+    #     FileSystem.new
+    #   end
   end
 
 end

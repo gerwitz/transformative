@@ -16,6 +16,9 @@ class FileSystem
   end
 
   def create_contents(repo, filename, message, content)
+
+puts "👀 #{content}"
+
     path = File.join(content_path, filename)
     FileUtils.mkdir_p(File.dirname(path))
     File.write(path, content)
@@ -32,7 +35,7 @@ class FileSystem
   end
 
   def content_path
-    "#{File.dirname(__FILE__)}/../../../content"
+    "#{File.dirname(__FILE__)}/../../content"
   end
 
 end

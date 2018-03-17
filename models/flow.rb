@@ -12,16 +12,36 @@ class Flow < Sequel::Model
   end
 
   def url_for_post(post)
-    return post.properties.inspect
+    props = post.view_properties
+    relative_url = "#{props[:year]}/#{props[:month]}/#{props[:day]}/#{props[:slug]}.html"
+    return URI.join(site.url, relative_url).to_s
   end
 
-  def content_for_post(post)
-    return post.properties.inspect
+  def file_path_for_post(post)
+    props = post.view_properties
+    relative_path = "source/notes/#{props[:year]}/#{props[:month]}/#{props[:day]}-#{props[:slug]}.html.md"
+    return relative_path
+  end
+
+  def file_content_for_post(post)
+    return """\
+layout: note
+date: #{post.date_time}
+slug: #{post.slug}
+category: microblog
+---
+#{post.content}
+"""
   end
 
   def store_post(post)
-puts "💡 store: #{store.inspect}, post: #{post.inspect}"
-    store.put(post.filename, post.data)
+puts "💡 storing post: #{post.inspect}"
+puts "💡 destination: #{store.location} - #{file_path_for_post(post)}"
+puts "💡 content: #{file_content_for_post(post)}"
+    store.put(file_path_for_post(post), file_content_for_post(post))
+    return url_for_post(post)
   end
+
+
 
 end
