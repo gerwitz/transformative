@@ -23,6 +23,18 @@ class Flow < Sequel::Model
     return relative_path
   end
 
+  def url_for_media(post)
+    props = post.view_properties
+    relative_url = "#{props[:year]}/#{props[:month]}/#{props[:day]}/#{props[:slug]}.html"
+    return URI.join(site.url, relative_url).to_s
+  end
+
+  def file_path_for_media(post)
+    props = post.view_properties
+    relative_path = "source/notes/#{props[:year]}/#{props[:month]}/#{props[:day]}-#{props[:slug]}.html.md"
+    return relative_path
+  end
+
   def file_content_for_post(post)
     return """\
 layout: note

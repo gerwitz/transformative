@@ -89,42 +89,42 @@ class Github < Store
     Base64.decode64(base64_content)
   end
 
-  def webhook(commits)
-    commits.each do |commit|
-      process_files(commit['added']) if commit['added'].any?
-      process_files(commit['modified'], true) if commit['modified'].any?
-    end
-  end
-
-  def process_files(files, modified=false)
-    files.each do |file|
-      file_content = get_file_content(file)
-      url = "/" + file.sub(/\.json$/,'')
-      data = JSON.parse(file_content)
-      klass = Post.class_from_type(data['type'][0])
-      post = klass.new(data['properties'], url)
-
-      if %w( h-entry h-event ).include?(data['type'][0])
-        if modified
-          existing_webmention_client =
-            ::Webmention::Client.new(post.absolute_url)
-          begin
-            existing_webmention_client.crawl
-          rescue OpenURI::HTTPError
-          end
-          Cache.put(post)
-          existing_webmention_client.send_mentions
-        else
-          Cache.put(post)
-        end
-        ::Webmention::Client.new(post.absolute_url).send_mentions
-        Utils.ping_pubsubhubbub
-        Context.fetch_contexts(post)
-      else
-        Cache.put(post)
-      end
-    end
-  end
+  # def webhook(commits)
+  #   commits.each do |commit|
+  #     process_files(commit['added']) if commit['added'].any?
+  #     process_files(commit['modified'], true) if commit['modified'].any?
+  #   end
+  # end
+  #
+  # def process_files(files, modified=false)
+  #   files.each do |file|
+  #     file_content = get_file_content(file)
+  #     url = "/" + file.sub(/\.json$/,'')
+  #     data = JSON.parse(file_content)
+  #     klass = Post.class_from_type(data['type'][0])
+  #     post = klass.new(data['properties'], url)
+  #
+  #     if %w( h-entry h-event ).include?(data['type'][0])
+  #       if modified
+  #         existing_webmention_client =
+  #           ::Webmention::Client.new(post.absolute_url)
+  #         begin
+  #           existing_webmention_client.crawl
+  #         rescue OpenURI::HTTPError
+  #         end
+  #         Cache.put(post)
+  #         existing_webmention_client.send_mentions
+  #       else
+  #         Cache.put(post)
+  #       end
+  #       ::Webmention::Client.new(post.absolute_url).send_mentions
+  #       Utils.ping_pubsubhubbub
+  #       Context.fetch_contexts(post)
+  #     else
+  #       Cache.put(post)
+  #     end
+  #   end
+  # end
 
   def github_full_repo
     "#{user}/#{location}"

@@ -19,4 +19,5 @@ before do
 end
 
 require_relative 'manage'
-require_relative 'server'
+require_relative 'micropub'
+require_relative 'webmention'

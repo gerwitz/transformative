@@ -1,18 +1,18 @@
 class SiteWriter < Sinatra::Application
-  helpers Sinatra::LinkHeader
 
   post '/:domain/micropub' do
     puts "Micropub params=#{params}"
     site = find_site
     flows = site.flows_dataset
     # start by assuming this is a non-create action
-    if params.key?('action')
-      verify_action
-      require_auth
-      verify_url
-      post = Micropub.action(params)
-      status 204
-    elsif params.key?('file')
+    # if params.key?('action')
+    #   verify_action
+    #   require_auth
+    #   verify_url
+    #   post = Micropub.action(params)
+    #   status 204
+    # elsif params.key?('file')
+    if params.key?('file')
       # assume this a file (photo) upload
       flow = flows.first(allow_media: true)
       require_auth
@@ -55,17 +55,6 @@ class SiteWriter < Sinatra::Application
     end
   end
 
-  get '/:domain/webmention' do
-    "Webmention endpoint"
-  end
-
-  post '/:domain/webmention' do
-    puts "Webmention params=#{params}"
-    Webmention.receive(params[:source], params[:target])
-    headers 'Location' => params[:target]
-    status 202
-  end
-
 private
 
   def require_auth
@@ -102,14 +91,14 @@ private
     end
   end
 
-  def verify_url
-    unless params.key?('url') && !params[:url].empty? &&
-        Store.exists_url?(params[:url])
-      raise Micropub::InvalidRequestError.new(
-        "The specified URL ('#{params[:url]}') could not be found."
-      )
-    end
-  end
+  # def verify_url
+  #   unless params.key?('url') && !params[:url].empty? &&
+  #       Store.exists_url?(params[:url])
+  #     raise Micropub::InvalidRequestError.new(
+  #       "The specified URL ('#{params[:url]}') could not be found."
+  #     )
+  #   end
+  # end
 
   def render_syndication_targets
     content_type :json
@@ -124,6 +113,7 @@ private
     }.to_json
   end
 
+  # this is probably broken now
   def render_source
     content_type :json
     relative_url = Utils.relative_url(params[:url])
@@ -140,16 +130,6 @@ private
       post.data
     end
     data.to_json
-  end
-
-  # don't cache posts for the first 10 mins (to allow editing)
-  def cache_unless_new
-    published = Time.parse(@post.properties['published'][0])
-    if Time.now - published > 600
-      cache_control :s_maxage => 300, :max_age => 600
-    else
-      cache_control :max_age => 0
-    end
   end
 
 end
