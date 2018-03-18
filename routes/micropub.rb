@@ -32,7 +32,7 @@ class SiteWriter < Sinatra::Application
       # post.syndicate(services) if services.any?
 
       if params.key?(:photo)
-        post.photo_urls = flow.attach_photos(params[:photo])
+        post.photo_urls = flow.attach_photos(post, params[:photo])
       end
 
       url = flow.store_post(post)
