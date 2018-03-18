@@ -6,8 +6,8 @@ module Auth
     response = HTTParty.post('https://indieauth.com/auth', {
       body: {
         code: code,
-        client_id: "#{ENV['RACK_ENV'] == 'production' ? 'https' : 'http'}://#{our_host}/",
-        redirect_uri: "#{ENV['RACK_ENV'] == 'production' ? 'https' : 'http'}://#{our_host}/login"
+        client_id: "#{request.scheme}://#{our_host}/",
+        redirect_uri: "#{request.scheme}://#{our_host}/login"
       },
       headers: { 'Accept' => 'application/json' }
     })

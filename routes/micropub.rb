@@ -46,9 +46,9 @@ class SiteWriter < Sinatra::Application
         verify_url
         render_source
       when 'config'
-puts "media-endpoint: #{ENV['RACK_ENV'] == 'production' ? 'https' : 'http'}://#{request.host_with_port}/#{site.domain}/micropub"
+puts "media-endpoint: #{request.scheme}://#{request.host_with_port}/#{site.domain}/micropub"
         {
-          "media-endpoint" => "#{ENV['RACK_ENV'] == 'production' ? 'https' : 'http'}://#{request.host_with_port}/#{site.domain}/micropub",
+          "media-endpoint" => "#{request.scheme}://#{request.host_with_port}/#{site.domain}/micropub",
           "syndicate-to" => settings.syndication_targets
         }.to_json
       when 'syndicate-to'
