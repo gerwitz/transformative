@@ -7,7 +7,7 @@ class Media
 
     type = file_hash[:type]
     if filename = file_hash[:filename]
-      @slug = filename
+      @slug = File.basename(filename)
       extension = File.extname(filename)
     end
     @extension = extension || Rack::Mime::MIME_TYPES.invert[type]
