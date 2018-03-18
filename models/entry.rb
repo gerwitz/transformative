@@ -74,17 +74,8 @@ class Entry < Post
 
   def self.new_from_form(params)
     # wrap each non-array value in an array
-    props = Hash[ params.map { |k, v| [k, Array(v)] } ]
-
-    if props.key?('photo')
-      props['photo'] = if params['photo'].is_a?(Array)
-          Media.upload_files(params['photo'])
-        else
-          [Media.upload_file(params['photo'])]
-        end
-    end
-
-    self.new(props)
+    deep_props = Hash[ params.map { |k, v| [k, Array(v)] } ]
+    self.new(deep_props)
   end
 
 end

@@ -30,7 +30,11 @@ class SiteWriter < Sinatra::Application
       flow = flows.where(post_type_id: post.type_id).first
 # puts "💡 flow: #{flow.inspect}"
       # post.syndicate(services) if services.any?
-      # Store.save(post)
+
+      if params.key?(:photo)
+        post.attachment_urls = process_attachments(params[:photo])
+      end
+
       url = flow.store_post(post)
       headers 'Location' => url
       status 202
@@ -137,6 +141,23 @@ private
       post.data
     end
     data.to_json
+  end
+
+private
+
+  def process_attachments(files)
+    files.map do |file|
+      process_attachment(file)
+    end
+  end
+
+  def process_attachment(file)
+    if Utils.valid_url?(file)
+      # TODO extract file from url and store?
+      file
+    else
+      save(file)
+    end
   end
 
 end

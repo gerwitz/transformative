@@ -57,8 +57,37 @@ category: microblog
   end
 
   def store_file(media)
-    store.upload(file_path_for_media(media), media.file)
+    media_store.upload(file_path_for_media(media), media.file)
     return url_for_media(media)
+  end
+
+  def process_attachments(attachments)
+    if attachments.is_a?(Array)
+      attachments.map do |attachment|
+        process_attachment(attachment)
+      end
+    else
+      [process_attachment(attachments)]
+    end
+  end
+
+  def process_attachment(attachment)
+    if valid_url?(attachment)
+      # TODO extract file from url and store?
+      file
+    else
+      store_file(attachment)
+    end
+  end
+
+private
+
+  def self.valid_url?(url)
+    begin
+      uri = URI.parse(url)
+      uri.is_a?(URI::HTTP) || uri.is_a?(URI::HTTPS)
+    rescue URI::InvalidURIError
+    end
   end
 
 end
