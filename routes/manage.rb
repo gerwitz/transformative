@@ -11,7 +11,7 @@ class SiteWriter < Sinatra::Application
 
   get '/login' do
     if params.key?('code') # this is probably an indieauth callback
-      url = Auth.url_via_indieauth(request.host_with_port, params[:code])
+      url = Auth.url_via_indieauth("#{request.scheme}://#{request.host_with_port}/", params[:code])
       login_url(url)
     end
     if session[:domain]

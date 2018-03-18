@@ -1,13 +1,13 @@
 module Auth
   module_function
 
-  def url_via_indieauth(our_host, code)
+  def url_via_indieauth(our_url, code)
     # TODO: use our own endpoint instead of IndieAuth.com
     response = HTTParty.post('https://indieauth.com/auth', {
       body: {
         code: code,
-        client_id: "#{request.scheme}://#{our_host}/",
-        redirect_uri: "#{request.scheme}://#{our_host}/login"
+        client_id: "#{our_url}",
+        redirect_uri: "#{our_url}login"
       },
       headers: { 'Accept' => 'application/json' }
     })
