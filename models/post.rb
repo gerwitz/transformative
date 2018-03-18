@@ -13,6 +13,7 @@ class Post
   def initialize(properties, url=nil)
     @properties = properties
     @url = url
+    @photos = []
 
     unless @properties.key?('published')
       @properties['published'] = [Time.now.utc.iso8601]
@@ -38,6 +39,7 @@ puts "🐌 view_properties: #{slug.inspect}"
       month: time.strftime('%m'),
       day: time.strftime('%d'),
       content: content,
+      has_photos: @photos.any?
       photos: @photos
     }.merge(@properties)
   end

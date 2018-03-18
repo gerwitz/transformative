@@ -65,22 +65,22 @@ class Flow < Sequel::Model
     return url_for_media(media)
   end
 
-  def process_photos(photos)
+  def attach_photos(post, photos)
     if photos.is_a?(Array)
       photos.map do |photo|
-        process_photo(photo)
+        attach_photo(post, photo)
       end
     else
-      [process_photo(photos)]
+      attach_photo(post, photos)
     end
   end
 
-  def process_photo(photo)
+  def attach_photo(post, photo)
     if self.class.valid_url?(photo)
-      # TODO extract file from url and store?
-      photo
+      post.attach_url(:photo, photo)
     else
-      store_file(photo)
+      url = store_file(photo)
+      post.attach_url(:photo, url)
     end
   end
 
