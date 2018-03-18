@@ -50,14 +50,14 @@ class Flow < Sequel::Model
   end
 
   def url_for_media(media)
-    relative_url = Mustache.render(media_url_template, post.view_properties)
+    relative_url = Mustache.render(media_url_template, media.view_properties)
     # props = media.view_properties
     # relative_url = "#{props[:year]}/#{props[:month]}/#{props[:day]}/#{props[:slug]}#{props[:extension]}"
     return URI.join(site.url, relative_url).to_s
   end
 
   def file_path_for_media(media)
-    Mustache.render(media_path_template, post.view_properties)
+    Mustache.render(media_path_template, media.view_properties)
   end
 
   def store_file(media)
