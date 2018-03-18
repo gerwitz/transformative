@@ -4,7 +4,10 @@ class Media
   def initialize(file_hash)
     @file = file_hash[:tempfile]
     @time = Time.now.utc
+puts "file_hash: #{file_hash}"
     @type = file_hash[:type]
+puts "type: #{@type}"
+puts "slugify: #{slugify}"
     @filename = file_hash[:filename] || slugify + Rack::Mime::MIME_TYPES.invert[@type]
   end
 
