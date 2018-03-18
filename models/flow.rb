@@ -24,13 +24,14 @@ class Flow < Sequel::Model
   end
 
   def file_content_for_post(post)
+    props = post.view_properties
     return """\
 layout: note
-date: #{post.date_time}
-slug: #{post.slug}
+date: #{props[:date_time]}
+slug: #{props[:slug]}
 category: microblog
 ---
-#{post.content}
+#{props[:content]}
 """
   end
 
