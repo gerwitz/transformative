@@ -19,33 +19,29 @@ class Post
     end
   end
 
-  def datify
+  def timify
     published = @properties['published'].first
-    return DateTime.iso8601(published).to_date
+    return DateTime.iso8601(published)
   end
 
   # memoize
-  def date
-    @date ||= datify
+  def time
+    @time ||= timify
   end
 
   def date_time
-    date.rfc3339
+    time.rfc3339
   end
 
   def view_properties
-    # tag(s)
-    {
+    return {
       slug: slug,
       date_time: date_time,
-      year: date.year,
-      month: date.month,
-      day: date.day,
+      year: time.year,
+      month: time.month,
+      day: time.day,
       content: content
-    }
-  end
-
-  def file_path
+    }.merge(@properties)
   end
 
   def data
@@ -87,17 +83,17 @@ class Post
   end
 
 
-  def generate_url_published
-    # unless @properties.key?('published')
-    #   @properties['published'] = [Time.now.utc.iso8601]
-    # end
-    "/#{Time.parse(@properties['published'][0]).strftime('%Y/%m')}/#{slug}"
-  end
-
-  def generate_url_slug(prefix='/')
-    slugify_url = Utils.slugify_url(@properties['url'][0])
-    "#{prefix}#{slugify_url}"
-  end
+  # def generate_url_published
+  #   # unless @properties.key?('published')
+  #   #   @properties['published'] = [Time.now.utc.iso8601]
+  #   # end
+  #   "/#{Time.parse(@properties['published'][0]).strftime('%Y/%m')}/#{slug}"
+  # end
+  #
+  # def generate_url_slug(prefix='/')
+  #   slugify_url = Utils.slugify_url(@properties['url'][0])
+  #   "#{prefix}#{slugify_url}"
+  # end
 
   def slugify
     content = if @properties.key?('name')

@@ -23,18 +23,6 @@ class Flow < Sequel::Model
     return relative_path
   end
 
-  def url_for_media(post)
-    props = post.view_properties
-    relative_url = "#{props[:year]}/#{props[:month]}/#{props[:day]}/#{props[:slug]}.html"
-    return URI.join(site.url, relative_url).to_s
-  end
-
-  def file_path_for_media(post)
-    props = post.view_properties
-    relative_path = "source/notes/#{props[:year]}/#{props[:month]}/#{props[:day]}-#{props[:slug]}.html.md"
-    return relative_path
-  end
-
   def file_content_for_post(post)
     return """\
 layout: note
@@ -54,6 +42,25 @@ puts "💡 content: #{file_content_for_post(post)}"
     return url_for_post(post)
   end
 
+  def url_for_media(media)
+    props = media.view_properties
+    relative_url = "#{props[:year]}/#{props[:month]}/#{props[:day]}/#{props[:slug]}.html"
+    return URI.join(site.url, relative_url).to_s
+  end
 
+  def file_path_for_media(media)
+    props = post.view_properties
+    relative_path = "source/notes/#{props[:year]}/#{props[:month]}/#{props[:day]}-#{props[:slug]}.html.md"
+    return relative_path
+  end
+
+  def store_file(media)
+    # @filename = params[:file][:filename]
+    # file = params[:file][:tempfile]
+    #
+    # File.open("./public/#{@filename}", 'wb') do |f|
+    #   f.write(file.read)
+    # end
+  end
 
 end

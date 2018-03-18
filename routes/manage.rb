@@ -57,7 +57,17 @@ class SiteWriter < Sinatra::Application
     if params.key?('id')
       # editing
       flow = Flow.first(id: params[:id].to_i)
-      flow.update_fields(params, [:store_id, :name, :allow_media, :allow_meta, :path_template, :url_template, :content_template])
+      flow.update_fields(params, [
+        :store_id,
+        :name,
+        :path_template,
+        :url_template,
+        :content_template,
+        :allow_media,
+        :media_path_template,
+        :media_url_template,
+        :allow_meta
+      ])
       redirect "/#{@site.domain}/"
     else
       # creating

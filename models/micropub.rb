@@ -1,7 +1,7 @@
 module Micropub
   module_function
 
-  # IN PROGRESS
+  # TODO: handle JSON requests
   def create(params)
     if params.key?('h')
       safe_properties = sanitise_properties(params)

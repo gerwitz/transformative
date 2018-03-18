@@ -1,6 +1,7 @@
 class SiteWriter < Sinatra::Application
 
   post '/:domain/micropub' do
+    # TODO: handle multipart requests
     puts "Micropub params=#{params}"
     site = find_site
     flows = site.flows_dataset
@@ -18,7 +19,7 @@ class SiteWriter < Sinatra::Application
       require_auth
       url = Media.save(params[:file])
       headers 'Location' => url
-      status 201
+      status 202
     else
       # assume this is a create
       require_auth
@@ -36,6 +37,7 @@ class SiteWriter < Sinatra::Application
   end
 
   get '/:domain/micropub' do
+    site = find_site
     if params.key?('q')
       require_auth
       content_type :json
@@ -44,7 +46,11 @@ class SiteWriter < Sinatra::Application
         verify_url
         render_source
       when 'config'
-        render_config
+puts "media-endpoint: #{ENV['RACK_ENV'] == 'production' ? 'https' : 'http'}://#{request.host_with_port}/#{site.domain}/micropub"
+        {
+          "media-endpoint" => "#{ENV['RACK_ENV'] == 'production' ? 'https' : 'http'}://#{request.host_with_port}/#{site.domain}/micropub",
+          "syndicate-to" => settings.syndication_targets
+        }.to_json
       when 'syndicate-to'
         render_syndication_targets
       else
@@ -105,13 +111,13 @@ private
     { "syndicate-to" => settings.syndication_targets }.to_json
   end
 
-  def render_config
-    content_type :json
-    {
-      "media-endpoint" => "#{ENV['SITE_URL']}micropub",
-      "syndicate-to" => settings.syndication_targets
-    }.to_json
-  end
+  # def render_config
+  #   content_type :json
+  #   {
+  #     "media-endpoint" => "#{ENV['SITE_URL']}micropub",
+  #     "syndicate-to" => settings.syndication_targets
+  #   }.to_json
+  # end
 
   # this is probably broken now
   def render_source
