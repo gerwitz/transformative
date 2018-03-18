@@ -108,7 +108,8 @@ puts "🐌 slug: #{@slug.inspect}"
          @properties['content'][0]
        end
     end
-    return Time.now.utc.strftime('%d-%H%M%S') if content.nil?
+puts "🐌 slugify: #{content.inspect}"
+    return time.strftime('%d-%H%M%S') if content.nil?
 
     content.downcase.gsub(/[^\w-]/, ' ').strip.gsub(' ', '-').
       gsub(/[-_]+/,'-').split('-')[0..5].join('-')
