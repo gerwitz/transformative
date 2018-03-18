@@ -4,16 +4,19 @@ class Media
   def initialize(file_hash)
     @file = file_hash[:tempfile]
     @time = Time.now.utc
-puts "file_hash: #{file_hash}"
-    @type = file_hash[:type]
-puts "type: #{@type}"
-puts "slugify: #{slugify}"
-    @filename = file_hash[:filename] || slugify + Rack::Mime::MIME_TYPES.invert[@type]
+
+    type = file_hash[:type]
+    if filename = file_hash[:filename]
+      @slug = filename
+      extension = File.extname(filename)
+    end
+    @extension = extension || Rack::Mime::MIME_TYPES.invert[type]
   end
 
   def view_properties
     {
-      filename: @filename,
+      slug: slug,
+      extension: @extension,
       year: @time.year,
       month: @time.month,
       day: @time.day
@@ -25,7 +28,11 @@ puts "slugify: #{slugify}"
   end
 
   def slugify
-    return "#{@time.strftime('%d-%H%M%S')}-#{SecureRandom.hex.to_s}"
+    return "#{@time.strftime('%H%M%S')}-#{SecureRandom.hex(8).to_s}"
+  end
+
+  def extensionify
+    return
   end
 
   def file

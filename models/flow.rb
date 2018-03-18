@@ -44,13 +44,13 @@ category: microblog
 
   def url_for_media(media)
     props = media.view_properties
-    relative_url = "#{props[:year]}/#{props[:month]}/#{props[:day]}/#{props[:slug]}.html"
+    relative_url = "#{props[:year]}/#{props[:month]}/#{props[:day]}/#{props[:slug]}.#{props[:extension]}"
     return URI.join(site.url, relative_url).to_s
   end
 
   def file_path_for_media(media)
-    props = post.view_properties
-    relative_path = "source/notes/#{props[:year]}/#{props[:month]}/#{props[:day]}-#{props[:slug]}.html.md"
+    props = media.view_properties
+    relative_path = "source/notes/#{props[:year]}/#{props[:month]}/#{props[:day]}-#{props[:slug]}.#{props[:extension]}"
     return relative_path
   end
 
