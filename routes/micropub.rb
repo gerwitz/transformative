@@ -49,7 +49,7 @@ class SiteWriter < Sinatra::Application
         render_source
       when 'config'
         {
-          "media-endpoint" => "#{request.scheme}://#{request.host_with_port}/#{site.domain}/micropub"
+          "media-endpoint" => "#{request.scheme}://#{request.host_with_port}/#{site.domain}/micropub",
           "syndicate-to" => []
         }.to_json
       when 'syndicate-to'
