@@ -61,22 +61,22 @@ category: microblog
     return url_for_media(media)
   end
 
-  def process_attachments(attachments)
-    if attachments.is_a?(Array)
-      attachments.map do |attachment|
-        process_attachment(attachment)
+  def process_photos(photos)
+    if photos.is_a?(Array)
+      photos.map do |photo|
+        process_photo(photo)
       end
     else
-      [process_attachment(attachments)]
+      [process_photo(photos)]
     end
   end
 
-  def process_attachment(attachment)
-    if self.class.valid_url?(attachment)
+  def process_photo(photo)
+    if self.class.valid_url?(photo)
       # TODO extract file from url and store?
-      attachment
+      photo
     else
-      store_file(attachment)
+      store_file(photo)
     end
   end
 

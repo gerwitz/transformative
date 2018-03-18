@@ -8,9 +8,9 @@ class Media
     type = file_hash[:type]
     if filename = file_hash[:filename]
       extension = File.extname(filename)
-      @slug = "#{@time.strftime('%H%M%S')}-#{SecureRandom.hex(4).to_s}_#{File.basename(filename, extension)}"
+      @slug = "#{@time.strftime('%H%M%S')}-#{File.basename(filename, extension)}_#{SecureRandom.hex(2).to_s}"
     else
-      @slug = "#{@time.strftime('%H%M%S')}-#{SecureRandom.hex(12).to_s}"
+      @slug = "#{@time.strftime('%H%M%S')}-#{SecureRandom.hex(8).to_s}"
     end
     @extension = extension || Rack::Mime::MIME_TYPES.invert[type]
   end

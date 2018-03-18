@@ -38,7 +38,7 @@ puts "🐌 view_properties: #{slug.inspect}"
       month: time.strftime('%m'),
       day: time.strftime('%d'),
       content: content,
-      attachments: @attachments
+      photos: @photos
     }.merge(@properties)
   end
 
@@ -154,8 +154,8 @@ puts "🐌 view_properties: #{slug.inspect}"
     @properties.delete('deleted')
   end
 
-  def attachment_urls=(urls)
-    @attachments = urls
+  def photo_urls=(urls)
+    @photos = urls
   end
 
   def set_updated

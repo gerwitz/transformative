@@ -32,7 +32,7 @@ class SiteWriter < Sinatra::Application
       # post.syndicate(services) if services.any?
 
       if params.key?(:photo)
-        post.attachment_urls = flow.process_attachments(params[:photo])
+        post.photo_urls = flow.process_photos(params[:photo])
       end
 
       url = flow.store_post(post)
@@ -145,13 +145,13 @@ private
 
 # private
 
-  # def process_attachments(files)
+  # def process_photos(files)
   #   files.map do |file|
-  #     process_attachment(file)
+  #     process_photo(file)
   #   end
   # end
   #
-  # def process_attachment(file)
+  # def process_photo(file)
   #   if Utils.valid_url?(file)
   #     # TODO extract file from url and store?
   #     file
