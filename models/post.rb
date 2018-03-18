@@ -8,7 +8,7 @@ class Post
     5 => :event
   }
 
-  attr_reader :properties, :url
+  # attr_reader :properties, :url
 
   def initialize(properties, url=nil)
     @properties = properties
@@ -23,7 +23,7 @@ class Post
   def attach_url(type, url)
     case type
     when :photo
-      @photos << {url: url}
+      @photos << {'url' => url}
     else
       raise "Unknown URL type #{type}"
     end
