@@ -10,7 +10,7 @@ class Media
 
   def view_properties
     {
-      filename: filename,
+      filename: @filename,
       year: @time.year,
       month: @time.month,
       day: @time.day
@@ -25,4 +25,7 @@ class Media
     return "#{@time.strftime('%d-%H%M%S')}-#{SecureRandom.hex.to_s}"
   end
 
+  def file
+    @file
+  end
 end

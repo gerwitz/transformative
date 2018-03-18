@@ -32,7 +32,7 @@ class Github < Store
     octokit.create_contents(
       github_full_repo,
       filename,
-      "Adding new post using Transformative",
+      "Adding new post via sitewriter",
       content
     )
   end
@@ -41,7 +41,7 @@ class Github < Store
     octokit.update_contents(
       github_full_repo,
       filename,
-      "Updating post using Transformative",
+      "Updating post via sitewriter",
       sha,
       content
     )
@@ -51,7 +51,7 @@ class Github < Store
     octokit.create_contents(
       github_full_repo,
       filename,
-      "Adding new file using Transformative",
+      "Adding new file via sitewriter",
       file
     )
   end

@@ -26,6 +26,7 @@ module Auth
     end
   end
 
+  # TODO: don't assume we know the token endpoint!
   def verify_token_and_scope(token, scope)
     response = get_token_response(token, ENV['TOKEN_ENDPOINT'])
     unless response.code.to_i == 200

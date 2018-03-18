@@ -35,9 +35,9 @@ category: microblog
   end
 
   def store_post(post)
-puts "💡 storing post: #{post.inspect}"
-puts "💡 destination: #{store.location} - #{file_path_for_post(post)}"
-puts "💡 content: #{file_content_for_post(post)}"
+# puts "💡 storing post: #{post.inspect}"
+# puts "💡 destination: #{store.location} - #{file_path_for_post(post)}"
+# puts "💡 content: #{file_content_for_post(post)}"
     store.put(file_path_for_post(post), file_content_for_post(post))
     return url_for_post(post)
   end
@@ -55,12 +55,8 @@ puts "💡 content: #{file_content_for_post(post)}"
   end
 
   def store_file(media)
-    # @filename = params[:file][:filename]
-    # file = params[:file][:tempfile]
-    #
-    # File.open("./public/#{@filename}", 'wb') do |f|
-    #   f.write(file.read)
-    # end
+    store.upload(file_path_for_media(media), media.file)
+    return url_for_media(media)
   end
 
 end

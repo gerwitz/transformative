@@ -15,9 +15,10 @@ class SiteWriter < Sinatra::Application
     # elsif params.key?('file')
     if params.key?('file')
       # assume this a file (photo) upload
-      flow = flows.first(allow_media: true)
       require_auth
-      url = Media.save(params[:file])
+      media = Media.new(params)
+      flow = flows.first(allow_media: true)
+      url = store_file(media)
       headers 'Location' => url
       status 202
     else
@@ -46,7 +47,6 @@ class SiteWriter < Sinatra::Application
         verify_url
         render_source
       when 'config'
-puts "media-endpoint: #{request.scheme}://#{request.host_with_port}/#{site.domain}/micropub"
         {
           "media-endpoint" => "#{request.scheme}://#{request.host_with_port}/#{site.domain}/micropub",
           "syndicate-to" => settings.syndication_targets
