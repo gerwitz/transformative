@@ -31,7 +31,6 @@ class Post
   end
 
   def view_properties
-puts "🐌 view_properties: #{slug.inspect}"
     return {
       slug: slug,
       date_time: time.rfc3339,
@@ -39,7 +38,7 @@ puts "🐌 view_properties: #{slug.inspect}"
       month: time.strftime('%m'),
       day: time.strftime('%d'),
       content: content,
-      has_photos: @photos.any?
+      has_photos: @photos.any?,
       photos: @photos
     }.merge(@properties)
   end
