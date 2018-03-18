@@ -17,8 +17,6 @@ class Post
     unless @properties.key?('published')
       @properties['published'] = [Time.now.utc.iso8601]
     end
-
-puts "🐌 init: #{@properties[:slug].inspect}"
   end
 
   def timify
@@ -52,7 +50,6 @@ puts "🐌 view_properties: #{slug.inspect}"
   end
 
   def slug
-puts "🐌 slug: #{@slug.inspect}"
     @slug ||= slugify
   end
 
@@ -96,23 +93,25 @@ puts "🐌 slug: #{@slug.inspect}"
   # end
 
   def slugify
-    content = if @properties.key?('name')
-      @properties['name'][0]
-    elsif @properties.key?('summary')
-      @properties['summary'][0]
-    elsif @properties.key?('content')
-      if @properties['content'][0].is_a?(Hash) &&
-           @properties['content'][0].key?('html')
-         @properties['content'][0]['html']
+    content = ''
+    if @properties.key?('name')
+      content = @properties['name'][0]
+    end
+    if content.empty? && @properties.key?('summary')
+      content = @properties['summary'][0]
+    end
+    if content.empty? && @properties.key?('content')
+      if @properties['content'][0].is_a?(Hash) && @properties['content'][0].key?('html')
+         content = @properties['content'][0]['html']
        else
-         @properties['content'][0]
+         content = @properties['content'][0]
        end
     end
-puts "🐌 slugify: #{content.inspect}"
-    return time.strftime('%d-%H%M%S') if content.nil?
-
-    content.downcase.gsub(/[^\w-]/, ' ').strip.gsub(' ', '-').
-      gsub(/[-_]+/,'-').split('-')[0..5].join('-')
+    if content.empty?
+      return time.strftime('%d-%H%M%S')
+    else
+      content.downcase.gsub(/[^\w-]/, ' ').strip.gsub(' ', '-').gsub(/[-_]+/,'-').split('-')[0..5].join('-')
+    end
   end
 
   def replace(props)
