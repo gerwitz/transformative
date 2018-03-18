@@ -49,7 +49,8 @@ class Post
       content: content,
       has_photos: @photos.any?,
       photos: @photos
-    }.merge(@properties)
+    }
+    # }.merge(@properties)
   end
 
   def data
