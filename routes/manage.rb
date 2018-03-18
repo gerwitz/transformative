@@ -65,6 +65,7 @@ class SiteWriter < Sinatra::Application
         :url_template,
         :content_template,
         :allow_media,
+        :media_store_id,
         :media_path_template,
         :media_url_template,
         :allow_meta
