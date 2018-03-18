@@ -31,6 +31,7 @@ class SiteWriter < Sinatra::Application
   end
 
   get '/:domain/' do
+    auth_for_domain
     @site = find_site
     erb :site
   end
@@ -135,7 +136,7 @@ private
     return if ENV['RACK_ENV'].to_sym == :development
     domain ||= params[:domain]
     if domain != session[:domain]
-      raise StandardError.new("Can't authenticate for domain '#{domain}'")
+      redirect '/'
     end
   end
 

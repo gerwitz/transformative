@@ -13,19 +13,3 @@
   </form>
   <% end %>
 </div>
-
-<div>
-  This is <%= ENV['RACK_ENV'] %>
-</div>
-<div>
-  All sites:
-
-  <ul>
-    <% @sites.each do |site| %>
-    <li>
-      <a href="/<%= site.domain %>"><%= site.domain %></a>
-    </li>
-    <% end %>
-  </ul>
-
-</div>
