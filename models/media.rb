@@ -3,7 +3,7 @@ class Media
 
   def initialize(file_hash)
     @file = file_hash[:tempfile]
-    @time = Time.now.utc
+    @time = Time.now.utc.to_datetime
 
     type = file_hash[:type]
     if filename = file_hash[:filename]
