@@ -4,8 +4,7 @@ configure do
   # this feels like an odd hack to avoid Sinatra's natural directory structure
   root_path = "#{File.dirname(__FILE__)}/../"
   set :config_path, "#{root_path}config/"
-  set :syndication_targets,
-    JSON.parse(File.read("#{settings.config_path}syndication_targets.json"))
+  set :syndication_targets, {}
   set :markdown, layout_engine: :erb
   set :server, :puma
 

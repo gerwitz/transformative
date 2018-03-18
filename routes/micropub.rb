@@ -37,6 +37,7 @@ class SiteWriter < Sinatra::Application
     end
   end
 
+  # TODO: syndication targets
   get '/:domain/micropub' do
     site = find_site
     if params.key?('q')
@@ -48,11 +49,11 @@ class SiteWriter < Sinatra::Application
         render_source
       when 'config'
         {
-          "media-endpoint" => "#{request.scheme}://#{request.host_with_port}/#{site.domain}/micropub",
-          "syndicate-to" => settings.syndication_targets
+          "media-endpoint" => "#{request.scheme}://#{request.host_with_port}/#{site.domain}/micropub"
+          "syndicate-to" => []
         }.to_json
       when 'syndicate-to'
-        render_syndication_targets
+        "[]"
       else
         # Silently fail if query method is not supported
       end
@@ -106,10 +107,10 @@ private
   #   end
   # end
 
-  def render_syndication_targets
-    content_type :json
-    { "syndicate-to" => settings.syndication_targets }.to_json
-  end
+  # def render_syndication_targets
+  #   content_type :json
+  #   {}.to_json
+  # end
 
   # def render_config
   #   content_type :json
