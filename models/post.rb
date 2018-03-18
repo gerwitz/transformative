@@ -17,6 +17,8 @@ class Post
     unless @properties.key?('published')
       @properties['published'] = [Time.now.utc.iso8601]
     end
+
+puts "🐌 init: #{@properties[:slug].inspect}"
   end
 
   def timify
@@ -30,6 +32,7 @@ class Post
   end
 
   def view_properties
+puts "🐌 view_properties: #{slug.inspect}"
     return {
       slug: slug,
       date_time: time.rfc3339,
@@ -49,6 +52,7 @@ class Post
   end
 
   def slug
+puts "🐌 slug: #{@slug.inspect}"
     @slug ||= slugify
   end
 

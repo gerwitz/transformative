@@ -25,6 +25,7 @@ class Flow < Sequel::Model
 
   def file_content_for_post(post)
     props = post.view_properties
+puts "🐌 file_content_for_post: #{props[:slug].inspect}"
     return """\
 layout: note
 date: #{props[:date_time]}
