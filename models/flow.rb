@@ -51,7 +51,7 @@ class Flow < Sequel::Model
   def attach_photos(post, photos)
     if photos.is_a?(Array)
       photos.map do |item|
-        if photo.is_a?(Array)
+        if item.is_a?(Array)
           attach_photos(post, item)
         else
           attach_photo(post, item)
