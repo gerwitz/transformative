@@ -16,7 +16,7 @@ class SiteWriter < Sinatra::Application
     if params.key?('file')
       # assume this a file (photo) upload
       require_auth
-      media = Media.new(params)
+      media = Media.new(params[:file])
       flow = flows.first(allow_media: true)
       url = store_file(media)
       headers 'Location' => url
