@@ -23,8 +23,8 @@ class Flow < Sequel::Model
   end
 
   def file_content_for_post(post)
-# puts "🐌 post.view_properties: #{post.view_properties.inspect}"
-# puts "🐌 as json: #{post.view_properties.to_json}"
+puts "🐌 post.view_properties: #{post.view_properties.inspect}"
+puts "🐌 as json: #{post.view_properties.to_json}"
 
     Mustache.render(content_template, post.view_properties)
   end
