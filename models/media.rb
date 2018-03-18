@@ -8,28 +8,22 @@ class Media
     type = file_hash[:type]
     if filename = file_hash[:filename]
       extension = File.extname(filename)
-      @slug = File.basename(filename, extension)
+      @slug = "#{@time.strftime('%H%M%S')}-#{SecureRandom.hex(4).to_s}_#{File.basename(filename, extension)}"
+    else
+      @slug = "#{@time.strftime('%H%M%S')}-#{SecureRandom.hex(12).to_s}"
     end
     @extension = extension || Rack::Mime::MIME_TYPES.invert[type]
   end
 
   def view_properties
     {
-      slug: slug,
+      slug: @slug,
       extension: @extension,
       date_time: @time.rfc3339,
       year: @time.strftime('%Y'),
       month: @time.strftime('%m'),
       day: @time.strftime('%d')
     }
-  end
-
-  def slug
-    @slug ||= slugify
-  end
-
-  def slugify
-    return "#{@time.strftime('%H%M%S')}-#{SecureRandom.hex(8).to_s}"
   end
 
   def file
