@@ -48,11 +48,12 @@ class Github < Store
   end
 
   def upload(filename, file)
+    base64_content = Base64.encode64(file.read)
     octokit.create_contents(
       github_full_repo,
       filename,
       "Adding new file via sitewriter",
-      file
+      base64_content
     )
   end
 
