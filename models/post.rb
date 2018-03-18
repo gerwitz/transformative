@@ -57,21 +57,21 @@ class Post
     { 'type' => [h_type], 'properties' => @properties }
   end
 
-  def filename
-    "#{url}.json"
-  end
+  # def filename
+  #   "#{url}.json"
+  # end
 
   def slug
     @slug ||= slugify
   end
 
-  def url
-    @url ||= generate_url
-  end
-
-  def absolute_url
-    URI.join(ENV['SITE_URL'], url).to_s
-  end
+  # def url
+  #   @url ||= generate_url
+  # end
+  #
+  # def absolute_url
+  #   URI.join(ENV['SITE_URL'], url).to_s
+  # end
 
   def is_deleted?
     @properties.key?('deleted') &&
@@ -163,10 +163,6 @@ class Post
 
   def undelete
     @properties.delete('deleted')
-  end
-
-  def photo_urls=(urls)
-    @photos = urls
   end
 
   def set_updated
