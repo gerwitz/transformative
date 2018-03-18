@@ -29,17 +29,13 @@ class Post
     @time ||= timify
   end
 
-  def date_time
-    time.rfc3339
-  end
-
   def view_properties
     return {
       slug: slug,
-      date_time: date_time,
-      year: time.year,
-      month: time.month,
-      day: time.day,
+      date_time: time.rfc3339,
+      year: time.strftime('%Y'),
+      month: time.strftime('%m'),
+      day: time.strftime('%d'),
       content: content
     }.merge(@properties)
   end

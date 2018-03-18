@@ -17,9 +17,10 @@ class Media
     {
       slug: slug,
       extension: @extension,
-      year: @time.year,
-      month: @time.month,
-      day: @time.day
+      date_time: @time.rfc3339,
+      year: @time.strftime('%Y'),
+      month: @time.strftime('%m'),
+      day: @time.strftime('%d')
     }
   end
 
