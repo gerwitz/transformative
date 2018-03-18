@@ -5,6 +5,10 @@ class Github < Store
     return "GitHub"
   end
 
+  def name
+    return "#{github_full_repo} on GitHub"
+  end
+
 # below from Transformative
 
   # def save(post)

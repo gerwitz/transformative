@@ -12,6 +12,10 @@ class Store < Sequel::Model
     return "Unknown"
   end
 
+  def name
+    return "Invalid"
+  end
+
 end
 
 class StoreError < TransformativeError

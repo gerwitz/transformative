@@ -18,7 +18,7 @@
   <ul>
     <% @site.stores.each do |store| %>
     <li>
-      <%= store.location %> (<%= store.type_desc %>)
+      <%= store.name %>
     </li>
     <% end %>
   </ul>
@@ -47,7 +47,7 @@
       </th><td>
         sends <%= flow.post_type %>
         <% if flow.store_id %>
-          to <%= flow.store.location %> (<%= flow.store.type_desc %>)
+          to <%= flow.store.name %>
         <% end %>
 <!--
       </td><td>
@@ -76,7 +76,7 @@
         post store:
         <select name="store_id">
           <% @site.stores.each do |store| %>
-          <option value="<%= store.id %>"><%= store.location %> (<%= store.type_desc %>)</option>
+          <option value="<%= store.id %>"><%= store.name %></option>
           <% end %>
         </select>
       </label>

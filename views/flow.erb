@@ -17,7 +17,7 @@
         Store posts via <select name="store_id">
         <% @site.stores.each do |store| %>
         <option value="<%= store.id %>"<%= ' selected' if (store.id == @flow.store_id) %>>
-          <%= store.location %> (<%= store.type_desc %>)
+          <%= store.name %>
         </option>
         <% end %>
       </select></label>
@@ -48,10 +48,22 @@
         Store media via <select name="media_store_id">
           <% @site.stores.each do |store| %>
           <option value="<%= store.id %>"<%= ' selected' if (store.id == @flow.media_store_id) %>>
-            <%= store.location %> (<%= store.type_desc %>)
+            <%= store.name %>
           </option>
           <% end %>
         </select>
+      </label>
+    </div><div>
+      <label>
+        Path template
+        <br>
+        <input type="text" size="80" name="media_path_template" value="<%= @flow.media_path_template %>">
+      </label>
+    </div><div>
+      <label>
+        URL template
+        <br>
+        <input type="text" size="80" name="media_url_template" value="<%= @flow.media_url_template %>">
       </label>
     </div>
 
