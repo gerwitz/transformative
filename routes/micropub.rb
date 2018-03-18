@@ -18,7 +18,7 @@ class SiteWriter < Sinatra::Application
       require_auth
       media = Media.new(params[:file])
       flow = flows.first(allow_media: true)
-      url = store_file(media)
+      url = flow.store_file(media)
       headers 'Location' => url
       status 202
     else
