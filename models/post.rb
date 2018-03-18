@@ -20,6 +20,15 @@ class Post
     end
   end
 
+  def attach_url(type, url)
+    case type
+    when :photo
+      @photos << url
+    else
+      raise "Unknown URL type #{type}"
+    end
+  end
+
   def timify
     published = @properties['published'].first
     return DateTime.iso8601(published)
