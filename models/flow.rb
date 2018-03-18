@@ -1,5 +1,7 @@
 class Flow < Sequel::Model
 
+  require 'mustache'
+
   # def handles_type?(type)
   #   return post_types.contains(type)
   # end
@@ -12,28 +14,31 @@ class Flow < Sequel::Model
   end
 
   def url_for_post(post)
-    props = post.view_properties
-    relative_url = "#{props[:year]}/#{props[:month]}/#{props[:day]}/#{props[:slug]}.html"
+    relative_url = Mustache.render(url_template, post.view_properties)
+    # props = post.view_properties
+    # relative_url = "#{props[:year]}/#{props[:month]}/#{props[:day]}/#{props[:slug]}.html"
     return URI.join(site.url, relative_url).to_s
   end
 
   def file_path_for_post(post)
-    props = post.view_properties
-    relative_path = "source/notes/#{props[:year]}/#{props[:month]}/#{props[:day]}-#{props[:slug]}.html.md"
-    return relative_path
+    Mustache.render(path_template, post.view_properties)
+    # props = post.view_properties
+    # relative_path = "source/notes/#{props[:year]}/#{props[:month]}/#{props[:day]}-#{props[:slug]}.html.md"
+    # return relative_path
   end
 
   def file_content_for_post(post)
-    props = post.view_properties
-puts "🐌 file_content_for_post: #{props[:slug].inspect}"
-    return """\
-layout: note
-date: #{props[:date_time]}
-slug: #{props[:slug]}
-category: microblog
----
-#{props[:content]}
-"""
+    Mustache.render(content_template, post.view_properties)
+#     props = post.view_properties
+# puts "🐌 file_content_for_post: #{props[:slug].inspect}"
+#     return """\
+# layout: note
+# date: #{props[:date_time]}
+# slug: #{props[:slug]}
+# category: microblog
+# ---
+# #{props[:content]}
+# """
   end
 
   def store_post(post)
@@ -45,15 +50,14 @@ category: microblog
   end
 
   def url_for_media(media)
-    props = media.view_properties
-    relative_url = "#{props[:year]}/#{props[:month]}/#{props[:day]}/#{props[:slug]}#{props[:extension]}"
+    relative_url = Mustache.render(media_url_template, post.view_properties)
+    # props = media.view_properties
+    # relative_url = "#{props[:year]}/#{props[:month]}/#{props[:day]}/#{props[:slug]}#{props[:extension]}"
     return URI.join(site.url, relative_url).to_s
   end
 
   def file_path_for_media(media)
-    props = media.view_properties
-    relative_path = "source/notes/#{props[:year]}/#{props[:month]}/#{props[:day]}-#{props[:slug]}#{props[:extension]}"
-    return relative_path
+    Mustache.render(media_path_template, post.view_properties)
   end
 
   def store_file(media)
