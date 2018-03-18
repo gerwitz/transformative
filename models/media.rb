@@ -32,10 +32,6 @@ class Media
     return "#{@time.strftime('%H%M%S')}-#{SecureRandom.hex(8).to_s}"
   end
 
-  def extensionify
-    return
-  end
-
   def file
     @file
   end
