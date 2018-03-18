@@ -74,7 +74,7 @@ category: microblog
   def process_attachment(attachment)
     if self.class.valid_url?(attachment)
       # TODO extract file from url and store?
-      file
+      attachment
     else
       store_file(attachment)
     end
