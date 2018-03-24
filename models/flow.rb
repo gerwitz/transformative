@@ -63,6 +63,7 @@ puts "🐌 as json: #{post.view_properties.to_json}"
   end
 
   def attach_photo(post, photo)
+    # TODO: allow alt text in hash for JSON (spec 3.3.2)
     if self.class.valid_url?(photo)
       post.attach_url(:photo, photo)
     else
