@@ -8,6 +8,17 @@ class Post
     5 => :event
   }
 
+# note
+# bookmark-of
+# cite
+# location
+# event
+# card
+# repost
+# reply
+
+  # this was for access to the raw microformat properties
+  # ...but maybe we can avoid that
   # attr_reader :properties, :url
 
   def initialize(properties, url=nil)
